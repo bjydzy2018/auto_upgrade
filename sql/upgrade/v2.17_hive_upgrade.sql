@@ -1,0 +1,4 @@
+use platformid;
+
+show tables;
+

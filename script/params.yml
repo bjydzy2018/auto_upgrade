@@ -1,0 +1,159 @@
+#########################################################################################################
+#               yaml文件格式填写基本规则
+#-------------------------------------------------------------------------------------------------------
+# 1. 大小写敏感
+# 2. 使用缩进表示层级关系
+# 3. 缩进时不允许使用Tab键，只允许使用空格。
+# 4. 缩进的空格数目不重要，只要相同层级的元素左侧对齐即可
+# 5. 所有配置项只需要在分号:后配置子节点的value值，不需要配置父节点
+# 6. platform_list特殊操作，需要将其platform_id修改为直接的值，然后再配子节点，可以自行复制多个，保持格式一致
+#########################################################################################################
+
+# 公共参数：所有组件都需要用到
+common_params:
+    # 数据库相关配置
+    database:
+        # CMS数据库配置
+        cms:
+            # CMS数据库地址
+            url:
+            # CMS数据库端口
+            port:
+            # CMS数据库账户
+            user:
+            # CMS数据库密码
+            passwd:
+        # AAA数据库配置
+        aaa:
+            # AAA数据库地址
+            url:
+            # AAA数据库端口
+            port:
+            # AAA数据库账户
+            user:
+            # AAA数据库密码
+            passwd: 
+        # Redis配置            
+        redis:
+            # Redis地址
+            url:
+            # Redis端口
+            port:
+            # Redis密码，没有密码可以放空        
+            passwd:
+        # hive配置
+        hive:
+            # hive库名(平台id)
+            databasename:
+    # FTP配置
+    ftp:
+        # FTP主机地址
+        host:
+        # FTP主机账户
+        user:
+        # FTP主机密码
+        passwd:
+        # FTP主机数据存放目录
+        directory:
+    # KAFKA配置
+    kafka:
+        # kafka队列地址:端口，多IP用分号分隔，示例：192.168.90.74:9092,192.168.90.96:9092
+        KAFKA_HOST:
+        # kafka主机映射配置，在cdh查询
+        KAFKA_HOSTNAMES:{[ip-1,hostname-1],[ip-2,hostname-2],[ip-3,hostname-3]}
+    # ES配置
+    Elasticsearch:
+        # es地址，示例：slave01,slave02,slave03,slave04
+        es_host:
+        # es端口
+        es_port:
+        # es集群名
+        es.cluster.name:
+    # Zookeeper配置
+    zookeeper:
+        # zookeeper地址:端口，多个用逗号分开
+        kafka_zookeeper:
+    # Hadoop配置
+    hadoop:
+        # 集群hadoop配置文件路径
+        HADOOP_CONF_DIR:
+    # Spark配置
+    spark:
+        # 集群集成的spark路径
+        SPARK_PROJECT_DIR:
+    # YARN配置
+    yarn:
+        # yarn的ResourceManager地址，该地址可在cdh上看
+        ResourceManager:
+
+# 组件特定参数
+component_params:
+    # 可视化平台
+    reporter_system:
+        # 大数据请求webservice地址
+        NL_WEBSERVICE:
+        # 个性化推荐新接口
+        NL_NEW_RECOMMEND_SERVICE_ALI:
+        # 大数据详单导出地址
+        NL_DOWNLOAD_WEBSERVICE:
+        # 超级管理员账户
+        SYS_LOGINID:
+        # 超级管理员密码
+        SYS_LOGINPWD:
+        
+        # 报表管理使用MySQL数据库配置
+        mysql:
+            # 报表管理使用MySQL数据库地址
+            NL_DB_HOST:
+            # 报表管理使用MySQL数据库端口
+            NL_DB_USER:
+            # 报表管理使用MySQL数据库密码
+            NL_DB_PASS:
+            # 报表管理使用MySQL数据库名称
+            NL_DB_NAME:
+        
+        # 配置平台ID列表,报表需要显示的平台，如果有多个平台则按数组元素方式增加    
+        platform_list:
+            # 平台ID，其中platform_id需要替换成实际的值，例如：starcor（只有此处需要替换key值，其他配置均不用替换，只需要配置value即可）
+            cqyx:
+                # 地区地图名称
+                map:cyqxxxxxx
+                # 地区编码，一般填省
+                map_code:1111111111111111
+            starcor:
+                # 地区地图名称
+                map:
+                # 地区编码，一般填省
+                map_code:
+                
+    # 接口部署
+    sdk_ws:
+        # 图数据url
+        graphxUrl:
+        # presto连接地址
+        presto.url:
+        # presto连接账户
+        presto.user:
+        # presto连接密码
+        presto.pwd:
+
+    # 指标实时计算引擎    
+    realtime_engine: 
+        # kafka broker地址 TODO（是否与zk地址一致，只是端口不一致？）
+        kafka_broker:
+    
+    # 导出服务        
+    ws_outfile:   
+        # MySQL配置，此MySQL为蓝鲸平台使用的
+        # 集群mysql一般在master02上，可以在cdh上hive配置中的hive metastore 查看mysql地址
+        mysql:
+            # MySQL数据库地址
+            NL_DB_HOST:
+            # MySQL数据库端口
+            NL_DB_USER:
+            # MySQL数据库密码
+            NL_DB_PASS:
+            # MySQL数据库名称
+            NL_DB_NAME:
+
+

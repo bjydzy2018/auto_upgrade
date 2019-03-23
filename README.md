@@ -7,3 +7,10 @@ An automated deployment and upgrade tool
 |script|||Tool implementation directory|
 |sql|||SQL language directory|
 |third|||Third party tools directory|
+
+# Direction For Use
+## Deploy
+
+## Upgrade
+
+## Rollback

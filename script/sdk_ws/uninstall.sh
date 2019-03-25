@@ -51,13 +51,14 @@ function main()
 function uninstall_old()
 {
     printMessageLog INFO "uninstall old sdk ws starting ..." ${CLASS_NAME} ${FUNCNAME} ${LINENO}
+    local deployPath=""
 
     # 目录不存在，不需要卸载，未安装，直接返回成功
     if [ ! -d ${SDK_WS_DEPLOY_PATH} ]; then
         return 0
     fi
     
-    # 获取接口服务目录
+    # 获取老接口服务目录
     local services=$(ls -l ${SDK_WS_DEPLOY_PATH} | grep "sdk_ws" | awk '/^d/ {print $NF}')
     if [ -z ${services} ]; then
         services=$(ls -l ${SDK_WS_DEPLOY_PATH} | grep "sdk-ws" | awk '/^d/ {print $NF}')
@@ -67,13 +68,27 @@ function uninstall_old()
                 return 0
             fi
         fi
-    fi    
+    fi
     
     for service in ${services[@]}
     do
-        local deployPath=${SDK_WS_DEPLOY_PATH}/${service}
+        # 先备份整个目录
+        backup_directory ${SDK_WS_DEPLOY_PATH} ${service}
+        if [ $? -ne 0 ]; then
+            printMessageLog ERROR "backup ${SDK_WS_DEPLOY_PATH}/${service} failed." ${CLASS_NAME} ${FUNCNAME} ${LINENO}
+            return 1
+        fi
+    
+        # 再删除已有目录
+        deployPath=${SDK_WS_DEPLOY_PATH}/${service}
         rm -rf ${deployPath} >> ${LOG_PATH}/${LOG_FILE_NAME} 2>&1
+        if [ $? -ne 0 ]; then
+            printMessageLog ERROR "rm -rf ${deployPath} failed." ${CLASS_NAME} ${FUNCNAME} ${LINENO}
+            return 1
+        fi
     done
+    
+    
     
     printMessageLog INFO "uninstall old sdk ws end." ${CLASS_NAME} ${FUNCNAME} ${LINENO}
     return 0
@@ -93,8 +108,15 @@ function uninstall_new()
         return 0
     fi
     
-    rm -rf ${DEPLOY_PATH} >> ${LOG_PATH}/${LOG_FILE_NAME} 2>&1
+    # 先备份整个目录
+    backup_directory ${DEPLOY_ROOT_PATH}/${MICRO_SERVICE_NAME} ${SDK_WS_NAME}
+    if [ $? -ne 0 ]; then
+        printMessageLog ERROR "backup ${DEPLOY_ROOT_PATH}/${MICRO_SERVICE_NAME}/${SDK_WS_NAME} failed." ${CLASS_NAME} ${FUNCNAME} ${LINENO}
+        return 1
+    fi
     
+    # 再删除目录
+    rm -rf ${DEPLOY_PATH} >> ${LOG_PATH}/${LOG_FILE_NAME} 2>&1
     if [ $? -ne 0 ]; then
         printMessageLog ERROR "Uninstall an new version of the component [${SDK_WS_NAME}] failed." ${CLASS_NAME} ${FUNCNAME} ${LINENO}
         return 1

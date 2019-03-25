@@ -9,6 +9,11 @@ PARENT_PATH_NAME=""
 LOG_PATH=""
 LOG_FILE_NAME=""
 readonly LOG_ROOT_PATH=/var/log/sdk_vbs
+# 日志颜色
+RED_COLOR='\E[1;31m'  
+YELOW_COLOR='\E[1;33m' 
+BLUE_COLOR='\E[1;34m'  
+RESET='\E[0m'
 
 # 部署路径
 readonly DEPLOY_ROOT_PATH=/opt/sdk_vbs
@@ -282,13 +287,12 @@ function printMessageLog()
 
     local currenttime=`date "+%Y-%m-%d %H:%M:%S"`
     
+    echo "[${logLevel}][${currenttime}][${className}|${funcName}|LINENO:${lineNo}][${message}]" >> ${LOG_PATH}/${LOG_FILE_NAME}
     if [ -z "${color}" ]; then
         echo "[${logLevel}][${currenttime}][${className}|${funcName}|LINENO:${lineNo}][${message}]"
     else
-        echo -e "[${logLevel}][${currenttime}][${className}|${funcName}|LINENO:${lineNo}][${message}]"
+        echo -e "[${logLevel}][${currenttime}][${className}|${funcName}|LINENO:${lineNo}][${color}${message}${RESET}]"
     fi
-    
-    echo "[${logLevel}][${currenttime}][${className}|${funcName}|LINENO:${lineNo}][${message}]" >> ${LOG_PATH}/${LOG_FILE_NAME}
 }
 
 # ----------------------------------------------------------------------
@@ -1848,4 +1852,34 @@ function readInput()
         echo "输入参数有误"
         return 1
     fi
+}
+
+# ----------------------------------------------------------------------
+# FunctionName:		backup_directory
+# createTime  :		2019-03-25
+# description :		目录备份
+# author      :		wenfeng.duan
+# ----------------------------------------------------------------------
+function backup_directory()
+{
+    local path=$1
+    local serviceName=$2
+    
+    if [ ! -d "${path}/${serviceName}" ]; then
+        printMessageLog INFO "${path}/${serviceName}: No such file or directory, no need to backup." ${CLASS_NAME} ${FUNCNAME} ${LINENO}
+        return 0
+    fi
+    
+    # 获取当前时间
+    local now=$(getCurrentTime)
+    
+    cp -a -r ${path}/${serviceName} ${BACKUP_ROOT_PATH}/${serviceName}_${now}
+    [[ $? -ne 0 ]] && return 1
+    
+    cd ${BACKUP_ROOT_PATH}
+    tar -czvf ${serviceName}_${now}.tar.gz ${BACKUP_ROOT_PATH}/${serviceName}_${now}
+    [[ $? -ne 0 ]] && return 1
+    cd ${CURRENT_PATH}
+    
+    return 0
 }

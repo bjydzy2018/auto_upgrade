@@ -22,6 +22,9 @@ readonly DEPLOY_PATH=${DEPLOY_ROOT_PATH}/${MICRO_SERVICE_NAME}/${SDK_WS_NAME}
 # ----------------------------------------------------------------------
 function main()
 {
+    # 显示标志
+    showBanner
+    
     local type=$1
 
     # 读取部署参数，若时本地安装，使用默认参数
@@ -46,8 +49,8 @@ function main()
     [ $? -ne 0 ] && return 1
 
     # 若有老版本，先卸载
-#    uninstall
-#    [ $? -ne 0 ] && return 1
+    uninstall
+    [ $? -ne 0 ] && return 1
 
     # 安装，配置文件修改
     install
@@ -236,16 +239,18 @@ function paramsCheck()
     fi
 
     if [ ! -z ${PRESTO_PASSWD} ]; then
-        printMessageLog WARN "the parameter [PRESTO_PASSWD] is not null, please check." ${CLASS_NAME} ${FUNCNAME} ${LINENO}
-        sleep 30
+        printMessageLog WARN "the parameter [PRESTO_PASSWD] is not null, please check." ${CLASS_NAME} ${FUNCNAME} ${LINENO} ${RED_COLOR}
+        readInput
+        [[ $? -ne 0 ]] && return 1
     fi
     
     if [ -z ${DEFAULT_PLATFORM_ID} ]; then
         printMessageLog WARN "the parameter [DEFAULT_PLATFORM_ID] is null, use default value [default]." ${CLASS_NAME} ${FUNCNAME} ${LINENO}
         DEFAULT_PLATFORM_ID="default"
     elif [ x"default" != x"${DEFAULT_PLATFORM_ID}" ]; then
-        printMessageLog WARN "the parameter [DEFAULT_PLATFORM_ID] is not default, please check." ${CLASS_NAME} ${FUNCNAME} ${LINENO}
-        sleep 30
+        printMessageLog WARN "the parameter [DEFAULT_PLATFORM_ID] is not default, please check." ${CLASS_NAME} ${FUNCNAME} ${LINENO} ${RED_COLOR}
+        readInput
+        [[ $? -ne 0 ]] && return 1
     fi
 
     return 0

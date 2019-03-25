@@ -65,17 +65,39 @@ function uninstall_old()
     
     # 老版本组件卸载
     printMessageLog INFO "check directory: ${OLD_DEPLOY_PATH}" ${CLASS_NAME} ${FUNCNAME} ${LINENO}
-    if [ ! -d ${OLD_DEPLOY_PATH} ]; then
-        printMessageLog INFO "check directory: ${OLD_DEPLOY_PATH}/../np/" ${CLASS_NAME} ${FUNCNAME} ${LINENO}
-        if [ ! -d ${OLD_DEPLOY_PATH}/../np/ ]; then
-            return 0
-        else
-            printMessageLog INFO "delete directory: ${OLD_DEPLOY_PATH}/../np/" ${CLASS_NAME} ${FUNCNAME} ${LINENO}
-            rm -rf ${OLD_DEPLOY_PATH}/../np/ >> ${LOG_PATH}/${LOG_FILE_NAME} 2>&1
+    if [ -d ${OLD_DEPLOY_PATH} ]; then
+        # 先备份整个目录
+        backup_directory ${OLD_DEPLOY_PATH}/../ "bigdata"
+        if [ $? -ne 0 ]; then
+            printMessageLog ERROR "backup ${OLD_DEPLOY_PATH} failed." ${CLASS_NAME} ${FUNCNAME} ${LINENO}
+            return 1
         fi
-    else    
+        
+        # 再删除整个目录
         printMessageLog INFO "delete directory: ${OLD_DEPLOY_PATH}" ${CLASS_NAME} ${FUNCNAME} ${LINENO}
         rm -rf ${OLD_DEPLOY_PATH} >> ${LOG_PATH}/${LOG_FILE_NAME} 2>&1
+        if [ $? -ne 0 ]; then
+            printMessageLog ERROR "delete ${OLD_DEPLOY_PATH} failed." ${CLASS_NAME} ${FUNCNAME} ${LINENO}
+            return 1
+        fi
+    fi
+    
+    printMessageLog INFO "check directory: ${OLD_DEPLOY_PATH}/../np/" ${CLASS_NAME} ${FUNCNAME} ${LINENO}
+    if [ -d ${OLD_DEPLOY_PATH}/../np/ ]; then
+        # 先备份整个目录
+        backup_directory ${OLD_DEPLOY_PATH}/../ "np"
+        if [ $? -ne 0 ]; then
+            printMessageLog ERROR "backup ${OLD_DEPLOY_PATH}/../np/ failed." ${CLASS_NAME} ${FUNCNAME} ${LINENO}
+            return 1
+        fi
+    
+        # 再删除整个目录
+        printMessageLog INFO "delete directory: ${OLD_DEPLOY_PATH}/../np/" ${CLASS_NAME} ${FUNCNAME} ${LINENO}
+        rm -rf ${OLD_DEPLOY_PATH}/../np/ >> ${LOG_PATH}/${LOG_FILE_NAME} 2>&1
+        if [ $? -ne 0 ]; then
+            printMessageLog ERROR "delete ${OLD_DEPLOY_PATH}../np/ failed." ${CLASS_NAME} ${FUNCNAME} ${LINENO}
+            return 1
+        fi
     fi
     
     printMessageLog WARN "uninstall_old() end." ${CLASS_NAME} ${FUNCNAME} ${LINENO}
@@ -94,17 +116,39 @@ function uninstall_new()
     
     # 新版本组件卸载
     printMessageLog INFO "check directory: ${DEPLOY_PATH}" ${CLASS_NAME} ${FUNCNAME} ${LINENO}
-    if [ ! -d ${DEPLOY_PATH} ]; then
-        printMessageLog INFO "check directory: ${DEPLOY_PATH}/../np/" ${CLASS_NAME} ${FUNCNAME} ${LINENO}
-        if [ ! -d ${DEPLOY_PATH}/../np/ ]; then
-            return 0
-        else
-            printMessageLog INFO "delete directory: ${DEPLOY_PATH}/../np/" ${CLASS_NAME} ${FUNCNAME} ${LINENO}
-            rm -rf ${DEPLOY_PATH}/../np/ >> ${LOG_PATH}/${LOG_FILE_NAME} 2>&1
+    if [ -d ${DEPLOY_PATH} ]; then
+        # 先备份整个目录
+        backup_directory ${DEPLOY_PATH}/../ ${REPORTER_SYSTEM_NAME}
+        if [ $? -ne 0 ]; then
+            printMessageLog ERROR "backup ${DEPLOY_PATH} failed." ${CLASS_NAME} ${FUNCNAME} ${LINENO}
+            return 1
         fi
-    else    
+    
+        # 再删除整个目录
         printMessageLog INFO "delete directory: ${DEPLOY_PATH}" ${CLASS_NAME} ${FUNCNAME} ${LINENO}
         rm -rf ${DEPLOY_PATH} >> ${LOG_PATH}/${LOG_FILE_NAME} 2>&1
+        if [ $? -ne 0 ]; then
+            printMessageLog ERROR "delete ${DEPLOY_PATH} failed." ${CLASS_NAME} ${FUNCNAME} ${LINENO}
+            return 1
+        fi
+    fi
+    
+    printMessageLog INFO "check directory: ${DEPLOY_PATH}/../np/" ${CLASS_NAME} ${FUNCNAME} ${LINENO}
+    if [ -d ${DEPLOY_PATH}/../np/ ]; then
+        # 先备份整个目录
+        backup_directory ${DEPLOY_PATH}/../ "np"
+        if [ $? -ne 0 ]; then
+            printMessageLog ERROR "backup ${DEPLOY_PATH}/../np/ failed." ${CLASS_NAME} ${FUNCNAME} ${LINENO}
+            return 1
+        fi
+    
+        # 再删除整个目录
+        printMessageLog INFO "delete directory: ${DEPLOY_PATH}/../np/" ${CLASS_NAME} ${FUNCNAME} ${LINENO}
+        rm -rf ${DEPLOY_PATH}/../np/ >> ${LOG_PATH}/${LOG_FILE_NAME} 2>&1
+        if [ $? -ne 0 ]; then
+            printMessageLog ERROR "delete ${DEPLOY_PATH}../np/ failed." ${CLASS_NAME} ${FUNCNAME} ${LINENO}
+            return 1
+        fi
     fi
     
     printMessageLog WARN "uninstall_new() end." ${CLASS_NAME} ${FUNCNAME} ${LINENO}

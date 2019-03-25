@@ -82,8 +82,8 @@ function main()
     #[ $? -ne 0 ] && return 1
     
     # 升级报表数据库
-    #createMySQLForReportSystem ${action}
-    #[ $? -ne 0 ] && return 1
+    createMySQLForReportSystem ${action}
+    [ $? -ne 0 ] && return 1
     
     return 0
 }
@@ -593,8 +593,9 @@ function createMySQLForReportSystem()
             printMessageLog ERROR "get upgrade MySQL failed." ${CLASS_NAME} ${FUNCNAME} ${LINENO}
             return 1
         else
-            printMessageLog INFO "please check the upgrade SQL if correct ... " ${CLASS_NAME} ${FUNCNAME} ${LINENO}
-            sleep 60
+            printMessageLog INFO "please check the upgrade SQL if correct ... " ${CLASS_NAME} ${FUNCNAME} ${LINENO} ${RED_COLOR}
+            readInput
+            [[ $? -ne 0 ]] && return 1
         fi
         
         # 执行sql更新操作
@@ -631,8 +632,9 @@ function createMySQLForReportSystem()
             printMessageLog ERROR "get upgrade MySQL failed." ${CLASS_NAME} ${FUNCNAME} ${LINENO}
             return 1
         else
-            printMessageLog INFO "please check the SQL if correct ... " ${CLASS_NAME} ${FUNCNAME} ${LINENO}
-            sleep 60
+            printMessageLog INFO "please check the SQL if correct ... " ${CLASS_NAME} ${FUNCNAME} ${LINENO} ${RED_COLOR}
+            readInput
+            [[ $? -ne 0 ]] && return 1
         fi
         
         # 执行sql更新操作

@@ -49,8 +49,8 @@ function main()
     [ $? -ne 0 ] && return 1
 
     # 若有老版本，先卸载
-    #uninstall
-    #[ $? -ne 0 ] && return 1
+    uninstall
+    [ $? -ne 0 ] && return 1
 
     # 安装，配置文件修改
     install ${type}
@@ -152,7 +152,7 @@ function paramsCheck()
         printMessageLog WARN "the parameter [HADOOP_FTP_DIRECTORY] is null, will use default value [/]." ${CLASS_NAME} ${FUNCNAME} ${LINENO}
         HADOOP_FTP_DIRECTORY="/"
     else
-        printMessageLog WARN "FTP路径配置的值为[ ${HADOOP_FTP_DIRECTORY} ]，该路径为相对路径，不是FTP服务器的绝对路径，请确认是否正确." ${CLASS_NAME} ${FUNCNAME} ${LINENO}
+        printMessageLog WARN "FTP路径配置的值为[ ${HADOOP_FTP_DIRECTORY} ]，该路径为相对路径，不是FTP服务器的绝对路径，请确认是否正确." ${CLASS_NAME} ${FUNCNAME} ${LINENO} ${RED_COLOR}
         readInput
         [ $? -ne 0 ] && return 1
     fi
@@ -161,7 +161,7 @@ function paramsCheck()
         printMessageLog ERROR "the parameter [NN_REDIS_HOST] is null, invalid." ${CLASS_NAME} ${FUNCNAME} ${LINENO}
         return 1
     else
-        printMessageLog WARN "Redis服务器地址配置的值为[ ${NN_REDIS_HOST} ]，请确认是否正确." ${CLASS_NAME} ${FUNCNAME} ${LINENO}
+        printMessageLog WARN "Redis服务器地址配置的值为[ ${NN_REDIS_HOST} ]，请确认是否正确." ${CLASS_NAME} ${FUNCNAME} ${LINENO} ${RED_COLOR}
         readInput
         [ $? -ne 0 ] && return 1
     fi
@@ -255,11 +255,11 @@ function paramsCheck()
         return 1
     else
         if [ x"xjcbc" == x"${HIVE_PLATFORM_ID}" -a "true" != "${IF_IP_2_LATITUDE}" ]; then
-            printMessageLog WARN "[IF_IP_2_LATITUDE]的值为${IF_IP_2_LATITUDE}，新疆CBC要求的是true，请确认." ${CLASS_NAME} ${FUNCNAME} ${LINENO}
+            printMessageLog WARN "[IF_IP_2_LATITUDE]的值为${IF_IP_2_LATITUDE}，新疆CBC要求的是true，请确认." ${CLASS_NAME} ${FUNCNAME} ${LINENO} ${RED_COLOR}
             readInput
             [ $? -ne 0 ] && return 1
         elif [ x"xjcbc" != x"${HIVE_PLATFORM_ID}" -a "true" == "${IF_IP_2_LATITUDE}" ]; then
-            printMessageLog WARN "[IF_IP_2_LATITUDE]的值为${IF_IP_2_LATITUDE}，请确认是否需要开启IP转地区码开关，当前已知只有新疆CBC需要开启." ${CLASS_NAME} ${FUNCNAME} ${LINENO}
+            printMessageLog WARN "[IF_IP_2_LATITUDE]的值为${IF_IP_2_LATITUDE}，请确认是否需要开启IP转地区码开关，当前已知只有新疆CBC需要开启." ${CLASS_NAME} ${FUNCNAME} ${LINENO} ${RED_COLOR}
             readInput
             [ $? -ne 0 ] && return 1
         fi
@@ -270,15 +270,15 @@ function paramsCheck()
         return 1
     else
         if [ x"nmggd" == x"${HIVE_PLATFORM_ID}" -a "1" != "${AREA_CODE_CHANGE_RULE}" ]; then
-            printMessageLog WARN "[AREA_CODE_CHANGE_RULE]的值为${AREA_CODE_CHANGE_RULE}，内蒙古要求的是1，请确认." ${CLASS_NAME} ${FUNCNAME} ${LINENO}
+            printMessageLog WARN "[AREA_CODE_CHANGE_RULE]的值为${AREA_CODE_CHANGE_RULE}，内蒙古要求的是1，请确认." ${CLASS_NAME} ${FUNCNAME} ${LINENO} ${RED_COLOR}
             readInput
             [ $? -ne 0 ] && return 1
         elif [ x"gzgd" == x"${HIVE_PLATFORM_ID}" -a "1" != "${AREA_CODE_CHANGE_RULE}" ]; then
-            printMessageLog WARN "[AREA_CODE_CHANGE_RULE]的值为${AREA_CODE_CHANGE_RULE}，贵州广电要求的是1，请确认." ${CLASS_NAME} ${FUNCNAME} ${LINENO}
+            printMessageLog WARN "[AREA_CODE_CHANGE_RULE]的值为${AREA_CODE_CHANGE_RULE}，贵州广电要求的是1，请确认." ${CLASS_NAME} ${FUNCNAME} ${LINENO} ${RED_COLOR}
             readInput
             [ $? -ne 0 ] && return 1
         elif [ x"xjcbc" == x"${HIVE_PLATFORM_ID}" -a "2" != "${AREA_CODE_CHANGE_RULE}" ]; then
-            printMessageLog WARN "[AREA_CODE_CHANGE_RULE]的值为${AREA_CODE_CHANGE_RULE}，新疆CBC要求的是2，请确认." ${CLASS_NAME} ${FUNCNAME} ${LINENO}
+            printMessageLog WARN "[AREA_CODE_CHANGE_RULE]的值为${AREA_CODE_CHANGE_RULE}，新疆CBC要求的是2，请确认." ${CLASS_NAME} ${FUNCNAME} ${LINENO} ${RED_COLOR}
             readInput
             [ $? -ne 0 ] && return 1
         fi
@@ -289,11 +289,11 @@ function paramsCheck()
         return 1
     else
         if [ x"nmggd" == x"${HIVE_PLATFORM_ID}" -a "true" != "${IS_SPLICE_SP_ID}" ]; then
-            printMessageLog WARN "[IS_SPLICE_SP_ID]的值为${IS_SPLICE_SP_ID}，内蒙古要求的是true，请确认." ${CLASS_NAME} ${FUNCNAME} ${LINENO}
+            printMessageLog WARN "[IS_SPLICE_SP_ID]的值为${IS_SPLICE_SP_ID}，内蒙古要求的是true，请确认." ${CLASS_NAME} ${FUNCNAME} ${LINENO} ${RED_COLOR}
             readInput
             [ $? -ne 0 ] && return 1
         elif [ x"nmggd" != x"${HIVE_PLATFORM_ID}" -a "true" == "${IS_SPLICE_SP_ID}" ]; then
-            printMessageLog WARN "[IS_SPLICE_SP_ID]的值为${IS_SPLICE_SP_ID}，请确认是否需要开启在错误码前补SP_ID，当前已知只有内蒙古广电需要开启." ${CLASS_NAME} ${FUNCNAME} ${LINENO}
+            printMessageLog WARN "[IS_SPLICE_SP_ID]的值为${IS_SPLICE_SP_ID}，请确认是否需要开启在错误码前补SP_ID，当前已知只有内蒙古广电需要开启." ${CLASS_NAME} ${FUNCNAME} ${LINENO} ${RED_COLOR}
             readInput
             [ $? -ne 0 ] && return 1
         fi

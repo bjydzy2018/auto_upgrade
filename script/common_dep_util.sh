@@ -14,6 +14,8 @@ RED_COLOR='\E[1;31m'
 YELOW_COLOR='\E[1;33m' 
 BLUE_COLOR='\E[1;34m'  
 RESET='\E[0m'
+# 是否校验参数
+PARAM_CHECK_SWITCH="false"
 
 # 部署路径
 readonly DEPLOY_ROOT_PATH=/opt/sdk_vbs
@@ -289,7 +291,13 @@ function printMessageLog()
     
     echo "[${logLevel}][${currenttime}][${className}|${funcName}|LINENO:${lineNo}][${message}]" >> ${LOG_PATH}/${LOG_FILE_NAME}
     if [ -z "${color}" ]; then
-        echo "[${logLevel}][${currenttime}][${className}|${funcName}|LINENO:${lineNo}][${message}]"
+        if [ x"ERROR" == x"${logLevel}" -o x"error" == x"${logLevel}" ]; then
+            echo "[${RED_COLOR}${logLevel}${RESET}][${currenttime}][${className}|${funcName}|LINENO:${lineNo}][${message}]"
+        elif [ x"WARN" == x"${logLevel}" -o x"warn" == x"${logLevel}" ]; then
+            echo "[${YELOW_COLOR}${logLevel}${RESET}][${currenttime}][${className}|${funcName}|LINENO:${lineNo}][${message}]"
+        else
+            echo "[${logLevel}][${currenttime}][${className}|${funcName}|LINENO:${lineNo}][${message}]"
+        fi
     else
         echo -e "[${logLevel}][${currenttime}][${className}|${funcName}|LINENO:${lineNo}][${color}${message}${RESET}]"
     fi
@@ -1842,11 +1850,11 @@ function readInput()
 {
     read -p "请输入是否继续，Y[yes] or N[no]: " input
 
-    if [ x"yes" == x"${input}" -o x"Y" == x"${input}" ]; then
-        printMessageLog ERROR "参入参数为：${input}" ${CLASS_NAME} ${FUNCNAME} ${LINENO}
+    if [ x"yes" == x"${input}" -o x"Y" == x"${input}" -o x"y" == x"${input}" ]; then
+        printMessageLog INFO "已经选择继续执行" ${CLASS_NAME} ${FUNCNAME} ${LINENO}
         return 0
-    elif [ x"no" == x"${input}" -o x"N" == x"${input}" ]; then
-        printMessageLog ERROR "参入参数为：${input}" ${CLASS_NAME} ${FUNCNAME} ${LINENO}
+    elif [ x"no" == x"${input}" -o x"N" == x"${input}" -o x"n" == x"${input}" ]; then
+        printMessageLog ERROR "已经选择退出执行" ${CLASS_NAME} ${FUNCNAME} ${LINENO}
         return 1
     else
         echo "输入参数有误"
@@ -1873,13 +1881,36 @@ function backup_directory()
     # 获取当前时间
     local now=$(getCurrentTime)
     
-    cp -a -r ${path}/${serviceName} ${BACKUP_ROOT_PATH}/${serviceName}_${now}
+    cp -a -r ${path}/${serviceName} ${BACKUP_ROOT_PATH}/${serviceName}_${now} >/dev/null 2>&1
     [[ $? -ne 0 ]] && return 1
     
     cd ${BACKUP_ROOT_PATH}
-    tar -czvf ${serviceName}_${now}.tar.gz ${BACKUP_ROOT_PATH}/${serviceName}_${now}
+    tar -czvf ${serviceName}_${now}.tar.gz ${BACKUP_ROOT_PATH}/${serviceName}_${now} >/dev/null 2>&1
     [[ $? -ne 0 ]] && return 1
     cd ${CURRENT_PATH}
     
     return 0
+}
+
+# ----------------------------------------------------------------------
+# FunctionName:        isDigit
+# createTime  :        2019-03-29
+# description :        判断是否为数字
+# author      :        wenfeng.duan
+# ----------------------------------------------------------------------
+function isDigit()
+{
+    local str=$1
+    if [ -z "${str}" ]; then
+        printMessageLog ERROR "param is null, invalid." ${FUNCNAME} ${LINENO}
+        return 1;
+    fi
+    
+    if grep '^[[:digit:]]*$' <<< "${str}";then 
+        printMessageLog DEBUG "${str} is number." ${FUNCNAME} ${LINENO}
+        return 0;
+    else 
+        printMessageLog ERROR "${str} is not number." ${FUNCNAME} ${LINENO}
+        return 1;
+    fi
 }

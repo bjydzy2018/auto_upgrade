@@ -239,7 +239,7 @@ function paramsCheck()
     fi
 
     if [ ! -z ${PRESTO_PASSWD} ]; then
-        printMessageLog WARN "the parameter [PRESTO_PASSWD] is not null, please check." ${CLASS_NAME} ${FUNCNAME} ${LINENO} ${RED_COLOR}
+        printMessageLog WARN "the parameter [PRESTO_PASSWD:${PRESTO_PASSWD}] is not null, please check." ${CLASS_NAME} ${FUNCNAME} ${LINENO} ${RED_COLOR}
         readInput
         [[ $? -ne 0 ]] && return 1
     fi

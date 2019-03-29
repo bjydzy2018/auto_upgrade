@@ -577,7 +577,7 @@ function createMySQLForReportSystem()
     local action=$1
     local updateSQL="DELETE FROM nns_custom_visualization_ui WHERE nns_id NOT IN ( SELECT nns_id FROM ( SELECT max(nns_id) nns_id FROM nns_custom_visualization_ui GROUP BY nns_name ) a );"
     
-    if [ x"${action}" = x"upgrade" ]; then
+#    if [ x"${action}" = x"upgrade" ]; then
         printMessageLog DEBUG "mysql -h${NL_DB_HOST} -u${NL_DB_USER} -p${NL_DB_PASS} -D${NL_DB_NAME} -e \"${updateSQL}\"" ${CLASS_NAME} ${FUNCNAME} ${LINENO}
         mysql -h${NL_DB_HOST} -u${NL_DB_USER} -p${NL_DB_PASS} -D${NL_DB_NAME} -e "${updateSQL}" >> ${LOG_PATH}/${LOG_FILE_NAME} 2>&1
         
@@ -586,9 +586,10 @@ function createMySQLForReportSystem()
             return 1
         fi
         
-        # 查看需要执行的SQL命令
-        printMessageLog INFO "check the upgrade SQL, excute: ${SOFT_LINK_PATH}/tools/doctrine/bin/doctrine orm:schema-tool:update --dump-sql" ${CLASS_NAME} ${FUNCNAME} ${LINENO}
-        ${SOFT_LINK_PATH}/tools/doctrine/bin/doctrine orm:schema-tool:update --dump-sql
+        # 查看需要执行的SQL命令，注意：需要进入doctrine目录才能执行
+        cd ${SOFT_LINK_PATH}/tools/doctrine
+        printMessageLog INFO "check the upgrade SQL, excute: sh bin/doctrine orm:schema-tool:update --dump-sql" ${CLASS_NAME} ${FUNCNAME} ${LINENO}
+        sh bin/doctrine orm:schema-tool:update --dump-sql
         if [ $? -ne 0 ]; then
             printMessageLog ERROR "get upgrade MySQL failed." ${CLASS_NAME} ${FUNCNAME} ${LINENO}
             return 1
@@ -600,54 +601,56 @@ function createMySQLForReportSystem()
         
         # 执行sql更新操作
         printMessageLog INFO "upgrade MySQL table" ${CLASS_NAME} ${FUNCNAME} ${LINENO}
-        ${SOFT_LINK_PATH}/tools/doctrine/bin/doctrine orm:schema-tool:update --force
+        sh bin/doctrine orm:schema-tool:update --force
         if [ $? -ne 0 ]; then
             printMessageLog ERROR "update database ${NL_DB_NAME} failed." ${CLASS_NAME} ${FUNCNAME} ${LINENO}
             return 1
         else
             printMessageLog INFO "update database ${NL_DB_NAME} successfully." ${CLASS_NAME} ${FUNCNAME} ${LINENO}
         fi 
-    else
-        # 判断数据库是否存在
-        isExistMySQLDatabase ${NL_DB_HOST} ${NL_DB_USER} ${NL_DB_PASS} ${NL_DB_NAME}
-        if [ $? -ne 0 ]; then
-            printMessageLog INFO "database ${NL_DB_NAME} is not exist, need to create it." ${CLASS_NAME} ${FUNCNAME} ${LINENO}
-            
-            # 创建指定数据库
-            printMessageLog DEBUG "mysql -h${NL_DB_HOST} -u${NL_DB_USER} -p${NL_DB_PASS} -e \"CREATE DATABASE ${NL_DB_NAME} DEFAULT CHARACTER SET utf8 COLLATE utf8_unicode_ci;\" " ${CLASS_NAME} ${FUNCNAME} ${LINENO}
-            mysql -h${NL_DB_HOST} -u${NL_DB_USER} -p${NL_DB_PASS} -e "CREATE DATABASE ${NL_DB_NAME} DEFAULT CHARACTER SET utf8 COLLATE utf8_unicode_ci;"
-        
-            if [ $? -ne 0 ]; then
-                printMessageLog ERROR "create database ${NL_DB_NAME} failed." ${CLASS_NAME} ${FUNCNAME} ${LINENO}
-                return 1
-            fi
-        else
-            printMessageLog INFO "database ${NL_DB_NAME} is existed." ${CLASS_NAME} ${FUNCNAME} ${LINENO}
-        fi
-        
-        # 查看需要执行的SQL命令
-        printMessageLog INFO "check the SQL, excute: ${SOFT_LINK_PATH}/tools/doctrine/bin/doctrine orm:schema-tool:create --dump-sql" ${CLASS_NAME} ${FUNCNAME} ${LINENO}
-        ${SOFT_LINK_PATH}/tools/doctrine/bin/doctrine orm:schema-tool:create --dump-sql
-        if [ $? -ne 0 ]; then
-            printMessageLog ERROR "get upgrade MySQL failed." ${CLASS_NAME} ${FUNCNAME} ${LINENO}
-            return 1
-        else
-            printMessageLog INFO "please check the SQL if correct ... " ${CLASS_NAME} ${FUNCNAME} ${LINENO} ${RED_COLOR}
-            readInput
-            [[ $? -ne 0 ]] && return 1
-        fi
-        
-        # 执行sql更新操作
-        printMessageLog INFO "create MySQL table" ${CLASS_NAME} ${FUNCNAME} ${LINENO}
-        ${SOFT_LINK_PATH}/tools/doctrine/bin/doctrine orm:schema-tool:update --force
-        if [ $? -ne 0 ]; then
-            printMessageLog ERROR "create database ${NL_DB_NAME} failed." ${CLASS_NAME} ${FUNCNAME} ${LINENO}
-            return 1
-        else
-            printMessageLog INFO "update database ${NL_DB_NAME} successfully." ${CLASS_NAME} ${FUNCNAME} ${LINENO}
-        fi    
-    fi
-
+#    else
+#        # 判断数据库是否存在
+#        isExistMySQLDatabase ${NL_DB_HOST} ${NL_DB_USER} ${NL_DB_PASS} ${NL_DB_NAME}
+#        if [ $? -ne 0 ]; then
+#            printMessageLog INFO "database ${NL_DB_NAME} is not exist, need to create it." ${CLASS_NAME} ${FUNCNAME} ${LINENO}
+#            
+#            # 创建指定数据库
+#            printMessageLog DEBUG "mysql -h${NL_DB_HOST} -u${NL_DB_USER} -p${NL_DB_PASS} -e \"CREATE DATABASE ${NL_DB_NAME} DEFAULT CHARACTER SET utf8 COLLATE utf8_unicode_ci;\" " ${CLASS_NAME} ${FUNCNAME} ${LINENO}
+#            mysql -h${NL_DB_HOST} -u${NL_DB_USER} -p${NL_DB_PASS} -e "CREATE DATABASE ${NL_DB_NAME} DEFAULT CHARACTER SET utf8 COLLATE utf8_unicode_ci;"
+#        
+#            if [ $? -ne 0 ]; then
+#                printMessageLog ERROR "create database ${NL_DB_NAME} failed." ${CLASS_NAME} ${FUNCNAME} ${LINENO}
+#                return 1
+#            fi
+#        else
+#            printMessageLog INFO "database ${NL_DB_NAME} is existed." ${CLASS_NAME} ${FUNCNAME} ${LINENO}
+#        fi
+#        
+#        # 查看需要执行的SQL命令
+#        cd ${SOFT_LINK_PATH}/tools/doctrine
+#        printMessageLog INFO "check the SQL, excute: sh bin/doctrine orm:schema-tool:create --dump-sql" ${CLASS_NAME} ${FUNCNAME} ${LINENO}
+#        sh bin/doctrine orm:schema-tool:create --dump-sql
+#        if [ $? -ne 0 ]; then
+#            printMessageLog ERROR "get upgrade MySQL failed." ${CLASS_NAME} ${FUNCNAME} ${LINENO}
+#            return 1
+#        else
+#            printMessageLog INFO "please check the SQL if correct ... " ${CLASS_NAME} ${FUNCNAME} ${LINENO} ${RED_COLOR}
+#            readInput
+#            [[ $? -ne 0 ]] && return 1
+#        fi
+#        
+#        # 执行sql更新操作
+#        printMessageLog INFO "update MySQL table, excute: sh bin/doctrine orm:schema-tool:update --force" ${CLASS_NAME} ${FUNCNAME} ${LINENO}
+#        sh bin/doctrine orm:schema-tool:update --force
+#        if [ $? -ne 0 ]; then
+#            printMessageLog ERROR "create database ${NL_DB_NAME} failed." ${CLASS_NAME} ${FUNCNAME} ${LINENO}
+#            return 1
+#        else
+#            printMessageLog INFO "update database ${NL_DB_NAME} successfully." ${CLASS_NAME} ${FUNCNAME} ${LINENO}
+#        fi    
+#    fi
+    
+    cd ${CURRENT_PATH}
     printMessageLog WARN "createMySQLForReportSystem() end." ${CLASS_NAME} ${FUNCNAME} ${LINENO}
     return 0
 }

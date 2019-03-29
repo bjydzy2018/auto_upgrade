@@ -83,72 +83,72 @@ function paramsCheck()
     
     printMessageLog INFO "paramsCheck ${REPORTER_SYSTEM_NAME} starting ..." ${CLASS_NAME} ${FUNCNAME} ${LINENO}
     # 公共参数校验
-    if [ -z ${NL_CMS_DB_HOST} ]; then
+    if [ -z ${NL_CMS_DB_HOST} -a x"true" == x"${PARAM_CHECK_SWITCH}" ]; then
         printMessageLog ERROR "the parameter [NL_CMS_DB_HOST] is null, invalid." ${CLASS_NAME} ${FUNCNAME} ${LINENO}
         return 1
     fi
 
-    if [ -z ${NL_CMS_DB_USER} ]; then
+    if [ -z ${NL_CMS_DB_USER} -a x"true" == x"${PARAM_CHECK_SWITCH}" ]; then
         printMessageLog ERROR "the parameter [NL_CMS_DB_USER] is null, invalid." ${CLASS_NAME} ${FUNCNAME} ${LINENO}
         return 1
     fi
 
-    if [ -z ${NL_CMS_DB_PASS} ]; then
+    if [ -z ${NL_CMS_DB_PASS} -a x"true" == x"${PARAM_CHECK_SWITCH}" ]; then
         printMessageLog ERROR "the parameter [NL_CMS_DB_PASS] is null, invalid." ${CLASS_NAME} ${FUNCNAME} ${LINENO}
         return 1
     fi
 
-    if [ -z ${NL_CMS_DB_NAME} ]; then
+    if [ -z ${NL_CMS_DB_NAME} -a x"true" == x"${PARAM_CHECK_SWITCH}" ]; then
         printMessageLog ERROR "the parameter [NL_CMS_DB_NAME] is null, invalid." ${CLASS_NAME} ${FUNCNAME} ${LINENO}
         return 1
     fi
     
-    if [ -z ${NL_CMS_SP_ID} ]; then
+    if [ -z ${NL_CMS_SP_ID} -a x"true" == x"${PARAM_CHECK_SWITCH}" ]; then
         printMessageLog ERROR "the parameter [NL_CMS_SP_ID] is null, invalid." ${CLASS_NAME} ${FUNCNAME} ${LINENO}
         return 1
     fi
     
-    if [ -z ${NL_CMS_PLATFORM_ID} ]; then
+    if [ -z ${NL_CMS_PLATFORM_ID} -a x"true" == x"${PARAM_CHECK_SWITCH}" ]; then
         printMessageLog ERROR "the parameter [NL_CMS_PLATFORM_ID] is null, invalid." ${CLASS_NAME} ${FUNCNAME} ${LINENO}
         return 1
     fi
 
-    if [ -z ${NL_AAA_DB_HOST} ]; then
+    if [ -z ${NL_AAA_DB_HOST} -a x"true" == x"${PARAM_CHECK_SWITCH}" ]; then
         printMessageLog ERROR "the parameter [NL_AAA_DB_HOST] is null, invalid." ${CLASS_NAME} ${FUNCNAME} ${LINENO}
         return 1
     fi
 
-    if [ -z ${NL_AAA_DB_USER} ]; then
+    if [ -z ${NL_AAA_DB_USER} -a x"true" == x"${PARAM_CHECK_SWITCH}" ]; then
         printMessageLog ERROR "the parameter [NL_AAA_DB_USER] is null, invalid." ${CLASS_NAME} ${FUNCNAME} ${LINENO}
         return 1
     fi
 
-    if [ -z ${NL_AAA_DB_PASS} ]; then
+    if [ -z ${NL_AAA_DB_PASS} -a x"true" == x"${PARAM_CHECK_SWITCH}" ]; then
         printMessageLog ERROR "the parameter [NL_AAA_DB_PASS] is null, invalid." ${CLASS_NAME} ${FUNCNAME} ${LINENO}
         return 1
     fi
 
-    if [ -z ${NL_AAA_DB_NAME} ]; then
+    if [ -z ${NL_AAA_DB_NAME} -a x"true" == x"${PARAM_CHECK_SWITCH}" ]; then
         printMessageLog ERROR "the parameter [NL_AAA_DB_NAME] is null, invalid." ${CLASS_NAME} ${FUNCNAME} ${LINENO}
         return 1
     fi
 
-    if [ -z ${HADOOP_FTP_HOST} ]; then
+    if [ -z ${HADOOP_FTP_HOST} -a x"true" == x"${PARAM_CHECK_SWITCH}" ]; then
         printMessageLog ERROR "the parameter [HADOOP_FTP_HOST] is null, invalid." ${CLASS_NAME} ${FUNCNAME} ${LINENO}
         return 1
     fi
 
-    if [ -z ${HADOOP_FTP_USER} ]; then
+    if [ -z ${HADOOP_FTP_USER} -a x"true" == x"${PARAM_CHECK_SWITCH}" ]; then
         printMessageLog WARN "the parameter [HADOOP_FTP_USER] is null, will use default value [sdk]." ${CLASS_NAME} ${FUNCNAME} ${LINENO}
         HADOOP_FTP_USER="sdk"
     fi
 
-    if [ -z ${HADOOP_FTP_PWD} ]; then
+    if [ -z ${HADOOP_FTP_PWD} -a x"true" == x"${PARAM_CHECK_SWITCH}" ]; then
         printMessageLog WARN "the parameter [HADOOP_FTP_PWD] is null, will use default value [sdk]." ${CLASS_NAME} ${FUNCNAME} ${LINENO}
         HADOOP_FTP_PWD="sdk"
     fi
 
-    if [ -z ${HADOOP_FTP_DIRECTORY} ]; then
+    if [ -z ${HADOOP_FTP_DIRECTORY} -a x"true" == x"${PARAM_CHECK_SWITCH}" ]; then
         printMessageLog WARN "the parameter [HADOOP_FTP_DIRECTORY] is null, will use default value [/]." ${CLASS_NAME} ${FUNCNAME} ${LINENO}
         HADOOP_FTP_DIRECTORY="/"
     else
@@ -184,7 +184,7 @@ function paramsCheck()
         fi
     fi
     
-    if [ -z ${NL_SP_ID} ]; then
+    if [ -z ${NL_SP_ID} -a x"true" == x"${PARAM_CHECK_SWITCH}" ]; then
         printMessageLog ERROR "the parameter [NL_SP_ID] is null, invalid." ${CLASS_NAME} ${FUNCNAME} ${LINENO}
         return 1
     fi

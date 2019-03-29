@@ -73,7 +73,7 @@ function main()
         [ $? -ne 0 ] && return 1
         
         # 创建蓝鲸平台Hive数据库
-        createHiveDatabase
+        upgradeHiveDatabase
         [ $? -ne 0 ] && return 1
         
         # 导入调度任务
@@ -188,12 +188,12 @@ function createMySQLForCLuster()
 }
 
 # ----------------------------------------------------------------------
-# FunctionName:		createHiveDatabase
+# FunctionName:		upgradeHiveDatabase
 # createTime  :		2018-08-26
-# description :		创建Hive数据库
+# description :		升级Hive数据库，支持多平台，多版本sql升级
 # author      :		wenfeng.duan
 # ----------------------------------------------------------------------
-function createHiveDatabase()
+function upgradeHiveDatabase()
 {
     printMessageLog WARN "createHiveDatabase() starting ..." ${CLASS_NAME} ${FUNCNAME} ${LINENO}
     
@@ -202,6 +202,7 @@ function createHiveDatabase()
         HIVE_FILE_PATH=${CURRENT_PATH}/../task/${VERSION_NUMBER}_hive_upgrade.sql
     fi
     
+    # 判断文件中是否存在use platformid; 若不存在，先增加再执行；若存在，先修改再执行
     sed -i "1,2s/platformid/${HIVE_PLATFORM_ID}/g" ${HIVE_FILE_PATH}
     if [ $? -ne 0 ]; then
         printMessageLog ERROR "update file ${HIVE_FILE_PATH} failed." ${CLASS_NAME} ${FUNCNAME} ${LINENO}
